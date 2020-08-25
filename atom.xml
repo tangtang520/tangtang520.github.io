@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hetao.monster/"/>
-  <updated>2020-08-06T09:30:28.817Z</updated>
+  <updated>2020-08-25T11:09:13.009Z</updated>
   <id>http://blog.hetao.monster/</id>
   
   <author>
@@ -17,46 +17,23 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>my-first-blog</title>
-    <link href="http://blog.hetao.monster/2020/08/06/my-first-blog/"/>
-    <id>http://blog.hetao.monster/2020/08/06/my-first-blog/</id>
-    <published>2020-08-06T15:52:32.000Z</published>
-    <updated>2020-08-06T09:30:28.817Z</updated>
+    <title>个性化推荐系统理论+实战</title>
+    <link href="http://blog.hetao.monster/2020/05/25/recommend-system/"/>
+    <id>http://blog.hetao.monster/2020/05/25/recommend-system/</id>
+    <published>2020-05-25T12:01:18.000Z</published>
+    <updated>2020-08-25T11:09:13.009Z</updated>
     
-    <content type="html"><![CDATA[<p>这是一个测试标题</p><a id="more"></a>]]></content>
+    <content type="html"><![CDATA[<p>通过 <strong>Spark SQL, Spark MLlib, Spark Streaming</strong> 技术，基于 **隐语义模型(LFM)**，结合实际项目经验，搭建一套个性化推荐系统</p><a id="more"></a><h4 id="这边文章更多的是分享一下，在实际项目中，如何落地个性化推荐，因为晚上相关资料很杂，并且一些开发流程都涉及的很片面，并且有绝大部分教程都是以电影推荐为例子来讲解，不可否认，电影推荐来讲解确实方便，因为有现成的数据源加上本身就自带的评分体系，但是实际工作中，有很多没有直接评分的，所以我们从这些流程动手，带你一起过一下，真实项目中的开发流程"><a href="#这边文章更多的是分享一下，在实际项目中，如何落地个性化推荐，因为晚上相关资料很杂，并且一些开发流程都涉及的很片面，并且有绝大部分教程都是以电影推荐为例子来讲解，不可否认，电影推荐来讲解确实方便，因为有现成的数据源加上本身就自带的评分体系，但是实际工作中，有很多没有直接评分的，所以我们从这些流程动手，带你一起过一下，真实项目中的开发流程" class="headerlink" title="这边文章更多的是分享一下，在实际项目中，如何落地个性化推荐，因为晚上相关资料很杂，并且一些开发流程都涉及的很片面，并且有绝大部分教程都是以电影推荐为例子来讲解，不可否认，电影推荐来讲解确实方便，因为有现成的数据源加上本身就自带的评分体系，但是实际工作中，有很多没有直接评分的，所以我们从这些流程动手，带你一起过一下，真实项目中的开发流程"></a>这边文章更多的是分享一下，在实际项目中，如何落地个性化推荐，因为晚上相关资料很杂，并且一些开发流程都涉及的很片面，并且有绝大部分教程都是以电影推荐为例子来讲解，不可否认，电影推荐来讲解确实方便，因为有现成的数据源加上本身就自带的评分体系，但是实际工作中，有很多没有直接评分的，所以我们从这些流程动手，带你一起过一下，真实项目中的开发流程</h4><h2 id="类似抖音，头条的点赞、分享、收藏等量化用户评分"><a href="#类似抖音，头条的点赞、分享、收藏等量化用户评分" class="headerlink" title="类似抖音，头条的点赞、分享、收藏等量化用户评分"></a>类似抖音，头条的点赞、分享、收藏等量化用户评分</h2><h3 id="1-首先业务定义评分"><a href="#1-首先业务定义评分" class="headerlink" title="1. 首先业务定义评分"></a>1. 首先业务定义评分</h3><p>比如点了赞，给1分，分享了，给2分，收藏了，给三分</p><h3 id="2-定义各个部分所占的权重"><a href="#2-定义各个部分所占的权重" class="headerlink" title="2. 定义各个部分所占的权重"></a>2. 定义各个部分所占的权重</h3><p>不同的行为，反映了用户的不同喜好程度，比如分享了比点赞更重要。面对众多指标，如何合理地确定各权重呢？这里通过层次分析法来确定各行为指标的权重</p><p><strong>构造成对比较矩阵</strong></p><table><thead><tr><th></th><th>播放时长</th><th>播放时长/视频时长</th><th>评论</th><th>下载</th><th>收藏</th><th>分享</th></tr></thead><tbody><tr><td>播放时长</td><td>1</td><td>1/3</td><td>1</td><td>1/3</td><td>1/5</td><td>1/5</td></tr><tr><td>播放时长/视频时长</td><td>3</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1/2</td></tr><tr><td>评论</td><td>1</td><td>1</td><td>1</td><td>1/3</td><td>1/2</td><td>1/5</td></tr><tr><td>下载</td><td>3</td><td>1</td><td>3</td><td>1</td><td>1</td><td>1/2</td></tr><tr><td>收藏</td><td>5</td><td>1</td><td>2</td><td>1</td><td>1</td><td>1/2</td></tr><tr><td>分享</td><td>5</td><td>2</td><td>5</td><td>2</td><td>2</td><td>1</td></tr></tbody></table><p>比如第四行第一列的数字3，表示“下载”比“播放时长”稍重要。</p><table><thead><tr><th>标度</th><th>含义</th></tr></thead><tbody><tr><td>1</td><td>表示两个元素相比，具有同样重要性</td></tr><tr><td>3</td><td>表示两个元素相比，前者比后者稍重要</td></tr><tr><td>5</td><td>表示两个元素相比，前者比后者明显重要</td></tr><tr><td>7</td><td>表示两个元素相比，前者比后者强烈重要</td></tr><tr><td>9</td><td>表示两个元素相比，前者比后者极端重要</td></tr><tr><td>2，4，6，8</td><td>表示上述相邻判断的中间值</td></tr><tr><td>倒数</td><td>上边的行为反过来</td></tr></tbody></table><h3 id="3-权重归一化"><a href="#3-权重归一化" class="headerlink" title="3. 权重归一化"></a>3. 权重归一化</h3><ul><li>把权重矩阵的每一行都归一化处理</li><li>每一行的数值相加 去掉一维</li><li>剩下的所有数据在进行归一化</li></ul><p><strong>例子</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">原矩阵</span><br><span class="line">[[1, 1/3, 1, 1/3, 1/5, 1/5],</span><br><span class="line">[3, 1, 1, 1, 1, 1/2]]</span><br><span class="line"></span><br><span class="line">1. 进行每行的归一化</span><br><span class="line">[[ 0.05555556 0.0521327 0.07692308 0.05830389 0.03508772 0.06896552]</span><br><span class="line">[0.16666667 0.15797788 0.07692308 0.17667845 0.1754386 0.17241379]</span><br><span class="line"></span><br><span class="line">2.每行相加</span><br><span class="line">[ 0.34696846 0.92609846]</span><br><span class="line"></span><br><span class="line">3.在进行归一化</span><br><span class="line">[ 0.05782808 0.15434974]</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="4-评分归一化"><a href="#4-评分归一化" class="headerlink" title="4. 评分归一化"></a>4. 评分归一化</h3><table><thead><tr><th>播放时长</th><th>播放时长/视频时长</th><th>评论</th><th>下载</th><th>收藏</th><th>分享</th></tr></thead><tbody><tr><td>0.9</td><td>0.8</td><td>1</td><td>0</td><td>0</td><td>0</td></tr></tbody></table><h3 id="5-根据评分和权重-计算物品的得分"><a href="#5-根据评分和权重-计算物品的得分" class="headerlink" title="5. 根据评分和权重 计算物品的得分"></a>5. 根据评分和权重 计算物品的得分</h3><pre><code>score = w1 * x1 + w2 * x2.......</code></pre><h2 id="推荐系统组成部分-（源码）"><a href="#推荐系统组成部分-（源码）" class="headerlink" title="推荐系统组成部分 （源码）"></a>推荐系统组成部分 （<a href="https://github.com/tangtang520/recommend-system">源码</a>）</h2><h3 id="1-离线数据加载和清洗"><a href="#1-离线数据加载和清洗" class="headerlink" title="1.离线数据加载和清洗"></a>1.离线数据加载和清洗</h3><p>从业务的数据源选取对应的操作数据，数据源可以是日志文件、或者Hadoop、MySQL、MongoDB等选取，选取的内容无外乎点赞、分享、收藏、观看记录等，通过Spark进行数据的整理和清洗，保存清洗后的数据。</p><h3 id="2-推荐策略-统计推荐"><a href="#2-推荐策略-统计推荐" class="headerlink" title="2.推荐策略-统计推荐"></a>2.推荐策略-统计推荐</h3><p>其实在项目的冷启动阶段，一些简单的推荐策略不但能达到比较好的推荐策略，并且还能收集信息，为将来的使用更加”先进”的推荐算法做好数据收集</p><p><strong>统计推荐可以考虑的点</strong></p><ul><li><p><strong>按照点赞量</strong> </p><p>  但是这样的策略会间接带来一些问题，前期上的一些内容基本都会一直在前边展示，解决思路就是加入时间维度进行惩罚，说一个简单思路 <strong>总的点赞量/物品上线时间</strong></p></li><li><p><strong>历史热门&amp;近期热门</strong> </p><p>  统计最近一段时间内热门的数据，热门定义根据自身业务来，可以是点赞量、分享、收藏、观看次数、完播率、或者某几项的评分等</p></li><li><p><strong>根据物品的评分得分</strong></p><p>  统计电影历史的平均得分，推荐得分权重较高的</p></li><li><p><strong>根据类别推荐TOPN</strong></p><p>  如果业务中的物品有类别的概念，可以考虑统计不同类别的评分TOPN数据</p></li><li><p><strong>系统相关</strong></p><p>  这一块严格意义不太算统计推荐中的内容，可以先把它划为这里，就是根据自身业务特点，比如我想主推某几个物品</p></li><li><p><strong>长尾</strong></p><p>  这一块严格意义也不太算统计推荐中的内容，可以把一些长尾的数据给一定的推荐量，根据后续的统计情况来判定是否进行二次推荐</p></li></ul><h3 id="2-推荐策略-内容推荐"><a href="#2-推荐策略-内容推荐" class="headerlink" title="2.推荐策略-内容推荐"></a>2.推荐策略-内容推荐</h3><p>内容推荐无外乎是定义两个物品的相似度，找到与当前物品相似的N个物品进行推荐，那么如何定义物品之间的相似度呢？</p><p><strong>思路一：</strong></p><ul><li>业务中每个物品有N多属性，我们可以选取其中几个属性</li><li>把选取的属性数值为向量（例如: 性别抽象为0|1），然后进行归一化</li><li>根据余弦相似度或者其他相似度算法 计算两个物品的相似度</li></ul><p><strong>思路二：</strong></p><ul><li>假如一些特征是包含一些文字信息，可以考虑使用<strong>tf-idf</strong>进行词频统计，计算相似度</li></ul><h3 id="3-推荐策略-基于隐语义-LFM-进行离线计算"><a href="#3-推荐策略-基于隐语义-LFM-进行离线计算" class="headerlink" title="3.推荐策略-基于隐语义(LFM)进行离线计算"></a>3.推荐策略-基于隐语义(LFM)进行离线计算</h3><p>这一块主要是使用<strong>Spark MLlib</strong> 来进行矩阵分解，说一下大体流程</p><ul><li>构建 <strong>用户-商品-评分</strong> 的矩阵</li><li>随机拆分 训练数据和测试数据</li><li>训练ALS包的涉及的不同参数，根据RMSE(均方根误差)选取较优的参数</li><li>根据训练出来的参数，拟合参数为用户-物品笛卡尔积的结果，预测所有的评分存储</li><li>在ALS拟合过程中会产生物品的特性向量，通过特征向量，得到物品的相似集合数据</li></ul><h3 id="3-推荐策略-实时推荐"><a href="#3-推荐策略-实时推荐" class="headerlink" title="3.推荐策略-实时推荐"></a>3.推荐策略-实时推荐</h3><p>这一块主要是基于<strong>Spark Streaming</strong> &amp; <strong>Kafka</strong>来进行数据流的计算，大致流程如下</p><ul><li><p>过来一个物品，选择一个候选物品集合，候选物品可以根据前几步计算的物品相似集合获取</p></li><li><p>过滤掉用户已经观看的数据</p></li><li><p>从业务系统中获取用户最近一段时间物品评分情况</p></li><li><p>分别计算候选物品与最近一段时间物品的关联情况进行选择，可以草考如下计算规则</p><pre><code>  规定：      评分超过3分为激励项，低于3分为惩罚项  设：      候选物品与当前物品的相似度s      各个最近物品的评分为c1,c2,c3      总的最近评分物品数量为n  计算公式：      (s * c1 + s * c2 + s * c3) / n  + log(激励项) - log(惩罚项)</code></pre></li></ul>]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;这是一个测试标题&lt;/p&gt;
+      &lt;p&gt;通过 &lt;strong&gt;Spark SQL, Spark MLlib, Spark Streaming&lt;/strong&gt; 技术，基于 **隐语义模型(LFM)**，结合实际项目经验，搭建一套个性化推荐系统&lt;/p&gt;
     
     </summary>
     
     
     
       <category term="技术" scheme="http://blog.hetao.monster/tags/%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://blog.hetao.monster/2020/07/29/hello-world/"/>
-    <id>http://blog.hetao.monster/2020/07/29/hello-world/</id>
-    <published>2020-07-29T02:37:40.000Z</published>
-    <updated>2020-08-06T09:30:37.323Z</updated>
-    
-    <content type="html"><![CDATA[<a id="more"></a><p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;doc
-      
-    
-    </summary>
-    
-    
     
   </entry>
   
