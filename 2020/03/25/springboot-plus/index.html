@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.hetao.monster","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Everyone can develop projects independently, quickly and efficiently！                                           springboot-plus是一套集成spring boot常用开发组件的后台快速开发框架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot-plus">
+<meta property="og:url" content="http://blog.hetao.monster/2020/03/25/springboot-plus/index.html">
+<meta property="og:site_name" content="猿猿的博客">
+<meta property="og:description" content="Everyone can develop projects independently, quickly and efficiently！                                           springboot-plus是一套集成spring boot常用开发组件的后台快速开发框架">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://springboot.plus/img/logo.png">
+<meta property="og:image" content="https://img.shields.io/badge/spring--boot--plus-2.0-blue">
+<meta property="og:image" content="https://img.shields.io/badge/spring%20boot-2.2.5.RELEASE-brightgreen">
+<meta property="og:image" content="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square">
+<meta property="article:published_time" content="2020-03-24T19:33:17.000Z">
+<meta property="article:modified_time" content="2020-08-27T03:50:07.007Z">
+<meta property="article:author" content="tang">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://springboot.plus/img/logo.png">
+
+<link rel="canonical" href="http://blog.hetao.monster/2020/03/25/springboot-plus/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>springboot-plus | 猿猿的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="猿猿的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">猿猿的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">你可以迷茫，但不可以虚度</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">1</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.hetao.monster/2020/03/25/springboot-plus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="tang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猿猿的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          springboot-plus
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-24 19:33:17" itemprop="dateCreated datePublished" datetime="2020-03-24T19:33:17Z">2020-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-27 03:50:07" itemprop="dateModified" datetime="2020-08-27T03:50:07Z">2020-08-27</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/03/25/springboot-plus/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/03/25/springboot-plus/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p align="center">
+  <a target="_blank" rel="noopener" href="https://github.com/geekidea/spring-boot-plus">
+   <img alt="spring-boot-plus logo" src="https://springboot.plus/img/logo.png">
+  </a>
+</p>
+<p align="center">
+  Everyone can develop projects independently, quickly and efficiently！
+</p>
+
+<p align="center">  
+  <a target="_blank" rel="noopener" href="https://github.com/geekidea/spring-boot-plus/">
+    <img alt="spring-boot-plus version" src="https://img.shields.io/badge/spring--boot--plus-2.0-blue">
+  </a>
+  <a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-boot">
+    <img alt="spring boot version" src="https://img.shields.io/badge/spring%20boot-2.2.5.RELEASE-brightgreen">
+  </a>
+  <a target="_blank" rel="noopener" href="https://www.apache.org/licenses/LICENSE-2.0">
+    <img alt="code style" src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square">
+  </a>
+</p>
+
+
+
+<p><strong>springboot-plus是一套集成spring boot常用开发组件的后台快速开发框架</strong></p>
+<a id="more"></a>
+
+<blockquote>
+<p>springboot-plus 是易于使用，快速，高效，功能丰富，开源的spring boot 脚手架</p>
+</blockquote>
+<h3 id="主要特性"><a href="#主要特性" class="headerlink" title="主要特性"></a>主要特性</h3><ul>
+<li>全局上下文唯一流水号，以及日志中自动存储当前流水号，快速定位问题</li>
+<li>集成spring boot 常用开发组件集、公共配置、AOP日志等</li>
+<li>集成mybatis plus快速dao操作</li>
+<li>快速生成后台代码: entity/controller/service/mapper/xml</li>
+<li>集成Swagger/Knife4j，可自动生成api文档</li>
+<li>集成jwt、签名机制，通过注解灵活鉴权</li>
+<li>集成Redis缓存</li>
+<li>集成druid连接池，JDBC性能和慢查询检测</li>
+<li>全局错误处理</li>
+</ul>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><h3 id="克隆-springboot-plus"><a href="#克隆-springboot-plus" class="headerlink" title="克隆 springboot-plus"></a>克隆 springboot-plus</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/tangtang520/tangtang520-springboot-plus.git</span><br><span class="line"><span class="built_in">cd</span> springboot-plus</span><br></pre></td></tr></table></figure>
+
+<h2 id="5分钟完成增删改查"><a href="#5分钟完成增删改查" class="headerlink" title="5分钟完成增删改查"></a>5分钟完成增删改查</h2><h3 id="1-创建数据库表"><a href="#1-创建数据库表" class="headerlink" title="1. 创建数据库表"></a>1. 创建数据库表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Table structure for foo_bar</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`foo_bar`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`foo_bar`</span></span><br><span class="line">(</span><br><span class="line">    <span class="string">`id`</span>            <span class="built_in">bigint</span>(<span class="number">20</span>)  <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;主键&#x27;</span>,</span><br><span class="line">    <span class="string">`name`</span>          <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;名称&#x27;</span>,</span><br><span class="line">    <span class="string">`foo`</span>           <span class="built_in">varchar</span>(<span class="number">20</span>)          <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;Foo&#x27;</span>,</span><br><span class="line">    <span class="string">`bar`</span>           <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;Bar&#x27;</span>,</span><br><span class="line">    <span class="string">`remark`</span>        <span class="built_in">varchar</span>(<span class="number">200</span>)         <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;备注&#x27;</span>,</span><br><span class="line">    <span class="string">`state`</span>         <span class="built_in">int</span>(<span class="number">11</span>)     <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;状态，0：禁用，1：启用&#x27;</span>,</span><br><span class="line">    <span class="string">`version`</span>       <span class="built_in">int</span>(<span class="number">11</span>)     <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;版本&#x27;</span>,</span><br><span class="line">    <span class="string">`create_time`</span>   <span class="built_in">timestamp</span>   <span class="literal">NULL</span>     <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">    <span class="string">`update_time`</span>   <span class="built_in">timestamp</span>   <span class="literal">NULL</span>     <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;修改时间&#x27;</span>,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span></span><br><span class="line">  <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span> = utf8mb4</span><br><span class="line">  <span class="keyword">COLLATE</span> = utf8mb4_general_ci <span class="keyword">COMMENT</span> =<span class="string">&#x27;FooBar&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Records of foo_bar</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> foo_bar (<span class="keyword">id</span>, <span class="keyword">name</span>, foo, bar, remark, state, <span class="keyword">version</span>, create_time, update_time) </span><br><span class="line">    <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;FooBar&#x27;</span>, <span class="string">&#x27;foo&#x27;</span>, <span class="string">&#x27;bar&#x27;</span>, <span class="string">&#x27;remark...&#x27;</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="string">&#x27;2019-11-01 14:05:14&#x27;</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> foo_bar (<span class="keyword">id</span>, <span class="keyword">name</span>, foo, bar, remark, state, <span class="keyword">version</span>, create_time, update_time) </span><br><span class="line">    <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;HelloWorld&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, <span class="literal">null</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="string">&#x27;2019-11-01 14:05:14&#x27;</span>, <span class="literal">null</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用代码生成器生成增删改查代码"><a href="#2-使用代码生成器生成增删改查代码" class="headerlink" title="2.使用代码生成器生成增删改查代码"></a>2.使用代码生成器生成增删改查代码</h3><blockquote>
+<p>代码生成入口类</p>
+</blockquote>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FrameworkCodeGenerator类执行main函数</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>支持表的修改不影响已有的mapper文件</strong></p>
+<p><strong>支持多表同时生成entity/controller/service/mapper/xml</strong></p>
+<p><strong>支持常用的增删改查分页，支持极其丰富的条件构造器</strong></p>
+<p><strong>真正的0配置，免去了 application.yml 或者数据源连接池配置的重复性工作</strong></p>
+<p><strong>多数据源也做到了0配置</strong></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 代码生成器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FrameworkCodeGenerator</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*是否仅仅生成entity*/</span></span><br><span class="line">        <span class="keyword">boolean</span> onlyEntity = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*是否是默认库*/</span></span><br><span class="line">        <span class="keyword">boolean</span> isPrimary = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*是否生成controller代码*/</span></span><br><span class="line">        <span class="keyword">boolean</span> isGenerateController = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*链接的数据库*/</span></span><br><span class="line">        SystemConfigConst.DatasourceEnum datasourceEnum = SystemConfigConst.DatasourceEnum.READING;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*生成的表结构*/</span></span><br><span class="line">        String[] tables = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;tb_test&quot;</span>&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*代码生成*/</span></span><br><span class="line">        generateByTables(onlyEntity, isPrimary, datasourceEnum, isGenerateController, tables);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">generateByTables</span><span class="params">(<span class="keyword">boolean</span> onlyEntity, <span class="keyword">boolean</span> isPrimary, SystemConfigConst.DatasourceEnum databaseConst, <span class="keyword">boolean</span> isGenerateController, String... tableNames)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        checkContinue(onlyEntity);</span><br><span class="line">        <span class="comment">//user -&gt; UserService, 设置成true: user -&gt; IUserService</span></span><br><span class="line">        <span class="keyword">boolean</span> isServiceI = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        String packageName = SystemConfigConst.BASE_PACKAGE;</span><br><span class="line"></span><br><span class="line">        GlobalConfig config = <span class="keyword">new</span> GlobalConfig();</span><br><span class="line">        String dbUrl = databaseConst.getJdbcUrl();</span><br><span class="line">        DataSourceConfig dataSourceConfig = <span class="keyword">new</span> DataSourceConfig();</span><br><span class="line">        dataSourceConfig.setDbType(DbType.MYSQL)</span><br><span class="line">                .setUrl(dbUrl)</span><br><span class="line">                .setUsername(databaseConst.getUserName())</span><br><span class="line">                .setPassword(databaseConst.getPassword())</span><br><span class="line">                .setDriverName(<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>);</span><br><span class="line">        StrategyConfig strategyConfig = <span class="keyword">new</span> StrategyConfig();</span><br><span class="line">        strategyConfig</span><br><span class="line">                .setTablePrefix(databaseConst.getTablePrefix())</span><br><span class="line">                .setEntityColumnConstant(<span class="keyword">true</span>)</span><br><span class="line">                .setCapitalMode(<span class="keyword">true</span>)</span><br><span class="line">                .setEntityLombokModel(<span class="keyword">false</span>)</span><br><span class="line">                .setNaming(NamingStrategy.underline_to_camel)</span><br><span class="line">                .setRestControllerStyle(<span class="keyword">true</span>)</span><br><span class="line">                .setControllerMappingHyphenStyle(<span class="keyword">true</span>)</span><br><span class="line">                .setInclude(tableNames);<span class="comment">//修改替换成你需要的表名，多个表名传数组</span></span><br><span class="line">        strategyConfig.setSuperControllerClass(BaseController.class);</span><br><span class="line">        config.setActiveRecord(<span class="keyword">false</span>)</span><br><span class="line">                .setEnableCache(<span class="keyword">false</span>)</span><br><span class="line"><span class="comment">//                .setSwagger2(true)  //设置swagger</span></span><br><span class="line">                .setEntityName(<span class="string">&quot;%sEntity&quot;</span>)</span><br><span class="line">                .setAuthor(<span class="string">&quot;tfy&quot;</span>)</span><br><span class="line">                .setOutputDir(<span class="string">&quot;src/main/java&quot;</span>)</span><br><span class="line">                .setActiveRecord(<span class="keyword">true</span>)</span><br><span class="line">                .setFileOverride(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">if</span> (!isServiceI) &#123;</span><br><span class="line">            config.setServiceName(<span class="string">&quot;%sService&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        PackageConfig packageConfig = <span class="keyword">new</span> PackageConfig()</span><br><span class="line">                .setParent(packageName)</span><br><span class="line">                .setEntity(<span class="string">&quot;entity.&quot;</span> + databaseConst.getDatabaseName())</span><br><span class="line">                .setService(<span class="string">&quot;service.&quot;</span> + databaseConst.getDatabaseName())</span><br><span class="line">                .setServiceImpl(<span class="string">&quot;service.&quot;</span> + databaseConst.getDatabaseName() + <span class="string">&quot;.impl&quot;</span>)</span><br><span class="line">                .setMapper(<span class="string">&quot;dao.&quot;</span> + databaseConst.getDatabaseName());</span><br><span class="line"><span class="comment">//              .setXml(&quot;dao.impl.&quot; + databaseConst.getDatabaseName());</span></span><br><span class="line"></span><br><span class="line">        AutoGenerator mpg = <span class="keyword">new</span> AutoGenerator().setGlobalConfig(config)</span><br><span class="line">                .setDataSource(dataSourceConfig)</span><br><span class="line">                .setStrategy(strategyConfig)</span><br><span class="line">                .setPackageInfo(packageConfig);</span><br><span class="line"></span><br><span class="line">        TemplateConfig tc = <span class="keyword">new</span> TemplateConfig();</span><br><span class="line">        tc.setEntity(<span class="string">&quot;/template/entity.java.vm&quot;</span>);</span><br><span class="line">        tc.setController(<span class="string">&quot;/template/controller.java.vm&quot;</span>);</span><br><span class="line"><span class="comment">//      tc.setController(null);</span></span><br><span class="line">        <span class="keyword">if</span>(!isGenerateController)&#123;</span><br><span class="line">            tc.setController(<span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        tc.setXml(<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (onlyEntity) &#123;</span><br><span class="line">            tc.setController(<span class="keyword">null</span>);</span><br><span class="line">            tc.setMapper(<span class="keyword">null</span>);</span><br><span class="line">            tc.setXml(<span class="keyword">null</span>);</span><br><span class="line">            tc.setService(<span class="keyword">null</span>);</span><br><span class="line">            tc.setServiceImpl(<span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 自定义配置</span></span><br><span class="line">        InjectionConfig cfg = <span class="keyword">new</span> InjectionConfig() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="comment">// to do nothing</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">if</span> (!onlyEntity) &#123;</span><br><span class="line">            List&lt;FileOutConfig&gt; focList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            focList.add(<span class="keyword">new</span> FileOutConfig(<span class="string">&quot;/templates/mapper.xml.vm&quot;</span>) &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> String <span class="title">outputFile</span><span class="params">(TableInfo tableInfo)</span> </span>&#123;</span><br><span class="line">                    <span class="comment">// 自定义输入文件名称</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="string">&quot;src/main/resources/mapper/&quot;</span> + databaseConst.getDatabaseName()</span><br><span class="line">                            + <span class="string">&quot;/&quot;</span> + tableInfo.getEntityName() + <span class="string">&quot;Mapper&quot;</span> + StringPool.DOT_XML;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            cfg.setFileOutConfigList(focList);</span><br><span class="line">        &#125;</span><br><span class="line">        mpg.setCfg(cfg);</span><br><span class="line">        mpg.setTemplate(tc);</span><br><span class="line">        mpg.execute();</span><br><span class="line">        <span class="keyword">if</span> (!onlyEntity) &#123;</span><br><span class="line">            saveDatabase(databaseConst, isPrimary);</span><br><span class="line">            saveApplicationProperties(databaseConst);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="全局上下文流水号"><a href="#全局上下文流水号" class="headerlink" title="全局上下文流水号"></a>全局上下文流水号</h2><h3 id="日志文件自动记录全局流水号"><a href="#日志文件自动记录全局流水号" class="headerlink" title="日志文件自动记录全局流水号"></a>日志文件自动记录全局流水号</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">log.info(<span class="string">&quot;params . name:&#123;&#125;&quot;</span>, name);</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-<span class="number">08</span>-<span class="number">26</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">58.696</span> |  INFO | <span class="number">3523</span> |   XNIO-<span class="number">1</span> task-<span class="number">1</span> | c.i.u.controller.outer.TestController   :<span class="number">57</span>   | SERIAL_NUMBER=<span class="number">1298598310491193344</span> | params . name:汤丰源</span><br></pre></td></tr></table></figure>
+
+<h3 id="返回内容自动返回全局流水号"><a href="#返回内容自动返回全局流水号" class="headerlink" title="返回内容自动返回全局流水号"></a>返回内容自动返回全局流水号</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;code&quot;</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="attr">&quot;data&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;serialNumber&quot;</span>: <span class="string">&quot;1298598310491193344&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="错误日志全局处理自动记录接口地址，全局流水号，堆栈"><a href="#错误日志全局处理自动记录接口地址，全局流水号，堆栈" class="headerlink" title="错误日志全局处理自动记录接口地址，全局流水号，堆栈"></a>错误日志全局处理自动记录接口地址，全局流水号，堆栈</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2020</span>-<span class="number">08</span>-<span class="number">26</span> <span class="number">20</span>:<span class="number">33</span>:<span class="number">38.985</span> | ERROR | <span class="number">3559</span> |   XNIO-<span class="number">1</span> task-<span class="number">1</span> | c.i.u.c.e.GlobalExceptionHandler        :<span class="number">49</span>   | SERIAL_NUMBER=<span class="number">1298599486083301376</span> | exceptionHandle.Exception url:/test/test, </span><br><span class="line"></span><br><span class="line">java.lang.ArithmeticException: / by zero</span><br><span class="line">    at com.iciba.user.controller.outer.TestController.test1(TestController.java:<span class="number">57</span>)</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:<span class="number">62</span>)</span><br><span class="line">    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:<span class="number">43</span>)</span><br><span class="line">    at java.lang.reflect.Method.invoke(Method.java:<span class="number">498</span>)</span><br><span class="line">    at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:<span class="number">190</span>)</span><br><span class="line">    at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:<span class="number">138</span>)</span><br><span class="line">    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:<span class="number">106</span>)</span><br><span class="line">    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:<span class="number">888</span>)</span><br><span class="line">    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:<span class="number">793</span>)</span><br><span class="line">    at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:<span class="number">87</span>)</span><br><span class="line">    at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:<span class="number">1040</span>)</span><br><span class="line">    at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:<span class="number">943</span>)</span><br><span class="line">    at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:<span class="number">1006</span>)</span><br><span class="line">    at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:<span class="number">898</span>)</span><br><span class="line">    at javax.servlet.http.HttpServlet.service(HttpServlet.java:<span class="number">503</span>)</span><br><span class="line">    at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:<span class="number">883</span>)</span><br><span class="line">    at javax.servlet.http.HttpServlet.service(HttpServlet.java:<span class="number">590</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="后续计划添加功能"><a href="#后续计划添加功能" class="headerlink" title="后续计划添加功能"></a>后续计划添加功能</h2><ul>
+<li>后续会使用<a target="_blank" rel="noopener" href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>来替代druid</li>
+<li>增加分库分表策略以及主从策略的代码生成器，推荐大家使用<a target="_blank" rel="noopener" href="https://github.com/apache/shardingsphere">shardingsphere</a> </li>
+<li>jwt验证，签名验证实现自定义注解配置</li>
+<li>增加限流策略配置</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>tang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://blog.hetao.monster/2020/03/25/springboot-plus/" title="springboot-plus">http://blog.hetao.monster/2020/03/25/springboot-plus/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/25/recommend-system/" rel="next" title="个性化推荐系统理论+实战">
+      个性化推荐系统理论+实战 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">主要特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="nav-number"></span> <span class="nav-text">快速开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%8B%E9%9A%86-springboot-plus"><span class="nav-number">1.</span> <span class="nav-text">克隆 springboot-plus</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E5%88%86%E9%92%9F%E5%AE%8C%E6%88%90%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number"></span> <span class="nav-text">5分钟完成增删改查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">1. 创建数据库表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%94%9F%E6%88%90%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">2.使用代码生成器生成增删改查代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E4%B8%8A%E4%B8%8B%E6%96%87%E6%B5%81%E6%B0%B4%E5%8F%B7"><span class="nav-number"></span> <span class="nav-text">全局上下文流水号</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E8%87%AA%E5%8A%A8%E8%AE%B0%E5%BD%95%E5%85%A8%E5%B1%80%E6%B5%81%E6%B0%B4%E5%8F%B7"><span class="nav-number">1.</span> <span class="nav-text">日志文件自动记录全局流水号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%86%85%E5%AE%B9%E8%87%AA%E5%8A%A8%E8%BF%94%E5%9B%9E%E5%85%A8%E5%B1%80%E6%B5%81%E6%B0%B4%E5%8F%B7"><span class="nav-number">2.</span> <span class="nav-text">返回内容自动返回全局流水号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97%E5%85%A8%E5%B1%80%E5%A4%84%E7%90%86%E8%87%AA%E5%8A%A8%E8%AE%B0%E5%BD%95%E6%8E%A5%E5%8F%A3%E5%9C%B0%E5%9D%80%EF%BC%8C%E5%85%A8%E5%B1%80%E6%B5%81%E6%B0%B4%E5%8F%B7%EF%BC%8C%E5%A0%86%E6%A0%88"><span class="nav-number">3.</span> <span class="nav-text">错误日志全局处理自动记录接口地址，全局流水号，堆栈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD%E8%AE%A1%E5%88%92%E6%B7%BB%E5%8A%A0%E5%8A%9F%E8%83%BD"><span class="nav-number"></span> <span class="nav-text">后续计划添加功能</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">tang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangtang520" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangtang520" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1315803594@qq.com" title="E-Mail → mailto:1315803594@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">10k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blog-grw8rnmv8u.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.hetao.monster/2020/03/25/springboot-plus/";
+    this.page.identifier = "2020/03/25/springboot-plus/";
+    this.page.title = "springboot-plus";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blog-grw8rnmv8u.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
