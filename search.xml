@@ -297,9 +297,9 @@
       </tags>
   </entry>
   <entry>
-    <title>spell-correct</title>
+    <title>spell-correct(拼写纠错)</title>
     <url>/2020/03/13/spell-correct/</url>
-    <content><![CDATA[<p><strong>如何高效实现搜索中的拼写纠错功能</strong></p>
+    <content><![CDATA[<p><strong>如何高效实现搜索中的拼写纠错功能?</strong></p>
 <a id="more"></a>
 
 <blockquote>
