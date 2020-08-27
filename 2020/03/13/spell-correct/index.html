@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.hetao.monster","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="如何高效实现搜索中的拼写纠错功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spell-correct">
+<meta property="og:url" content="http://blog.hetao.monster/2020/03/13/spell-correct/index.html">
+<meta property="og:site_name" content="猿猿的博客">
+<meta property="og:description" content="如何高效实现搜索中的拼写纠错功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-12T16:44:17.000Z">
+<meta property="article:modified_time" content="2020-08-27T10:01:56.685Z">
+<meta property="article:author" content="tang">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.hetao.monster/2020/03/13/spell-correct/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>spell-correct | 猿猿的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="猿猿的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">猿猿的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">你可以迷茫，但不可以虚度</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">1</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.hetao.monster/2020/03/13/spell-correct/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="tang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="猿猿的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          spell-correct
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-12 16:44:17" itemprop="dateCreated datePublished" datetime="2020-03-12T16:44:17Z">2020-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-27 10:01:56" itemprop="dateModified" datetime="2020-08-27T10:01:56Z">2020-08-27</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/03/13/spell-correct/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/03/13/spell-correct/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>如何高效实现搜索中的拼写纠错功能</strong></p>
+<a id="more"></a>
+
+<blockquote>
+<p>在很多搜索相关的产品中，一般都会提供拼写纠错的功能，比如Google,百度 亦或是查词软件中，那么如何实现一个高性能的拼写纠错的系统呢？我们一起弄一下</p>
+</blockquote>
+<h2 id="如何量化两个字符串的相似度"><a href="#如何量化两个字符串的相似度" class="headerlink" title="如何量化两个字符串的相似度"></a>如何量化两个字符串的相似度</h2><blockquote>
+<p>关于如何量化两个字符串的相似度的问题，我给出一种常用的方案<strong>编辑距离</strong></p>
+<p>顾名思义，编辑距离指的就是，将一个字符串转化成另一个字符串，需要的最少编辑操作次数（比如增加一个字符、删除一个字符、替换一个字符）。编辑距离越大，说明两个字符串的相似程度越小；相反，编辑距离就越小，说明两个字符串的相似程度越大。对于两个完全相同的字符串来说，编辑距离就是 0。</p>
+</blockquote>
+<blockquote>
+<p>根据所包含的编辑操作种类的不同，编辑距离有多种不同的计算方式，比较著名的有莱文斯坦距离（Levenshtein distance）和最长公共子串长度（Longest common substring length）。其中，莱文斯坦距离允许增加、删除、替换字符这三个编辑操作，最长公共子串长度只允许增加、删除字符这两个编辑操作。</p>
+</blockquote>
+<blockquote>
+<p>而且，莱文斯坦距离和最长公共子串长度，从两个截然相反的角度，分析字符串的相似程度。莱文斯坦距离的大小，表示两个字符串差异的大小；而最长公共子串的大小，表示两个字符串相似程度的大小。</p>
+</blockquote>
+<h3 id="代码实现莱文斯坦距离"><a href="#代码实现莱文斯坦距离" class="headerlink" title="代码实现莱文斯坦距离"></a>代码实现莱文斯坦距离</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> word1: A string</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> word2: A string</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>: The minimum number of steps.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;        </span><br><span class="line">        <span class="keyword">if</span>(word1 == <span class="keyword">null</span> || word2 == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">char</span>[] s1 = word1.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] s2 = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = s1.length;</span><br><span class="line">        <span class="keyword">int</span> n = s2.length;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 定义状态 双序列型动态规划</span></span><br><span class="line">        <span class="keyword">int</span>[][] f = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                <span class="comment">// i == 0 需要的编辑距离为 前j个元素</span></span><br><span class="line">                <span class="keyword">if</span>(i == <span class="number">0</span>) &#123;</span><br><span class="line">                    f[i][j] = j;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// j == 0的时候 需要的编辑距离为 前i个元素</span></span><br><span class="line">                <span class="keyword">if</span>(j == <span class="number">0</span>) &#123;</span><br><span class="line">                    f[i][j] = i;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// case1 考虑需要变动的三种情况 下边的式子分别为 删除、增加、替换的情况</span></span><br><span class="line">                f[i][j] = Math.min(f[i - <span class="number">1</span>][j], Math.min(f[i][j - <span class="number">1</span>], f[i - <span class="number">1</span>][j - <span class="number">1</span>])) + <span class="number">1</span>;</span><br><span class="line">                <span class="comment">// case2 最后一个字符相等的话 不需要编辑</span></span><br><span class="line">                <span class="keyword">if</span>(s1[i - <span class="number">1</span>] ==  s2[j - <span class="number">1</span>]) &#123;</span><br><span class="line">                    f[i][j] = Math.min(f[i][j], f[i - <span class="number">1</span>][j - <span class="number">1</span>]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> f[m][n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="代码实现最长公共子串长度"><a href="#代码实现最长公共子串长度" class="headerlink" title="代码实现最长公共子串长度"></a>代码实现最长公共子串长度</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> A: A string</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> B: A string</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>: The length of longest common subsequence of A and B</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestCommonSubsequence</span><span class="params">(String AA, String BB)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(AA == <span class="keyword">null</span> || BB == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">char</span>[] A = AA.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] B = BB.toCharArray();  </span><br><span class="line">        <span class="keyword">int</span> m = A.length;</span><br><span class="line">        <span class="keyword">int</span> n = B.length;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 动态规划 同样是双序列型动态规划的问题</span></span><br><span class="line">        <span class="keyword">int</span>[][] f = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                <span class="comment">// 只要一方没有元素，那么最长序列肯定是0</span></span><br><span class="line">                <span class="keyword">if</span>(i == <span class="number">0</span> || j == <span class="number">0</span>) &#123;</span><br><span class="line">                    f[i][j] = <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// case1 分别看一下抛去当前字符的最长子串 </span></span><br><span class="line">                f[i][j] = Math.max(f[i - <span class="number">1</span>][j], f[i][j - <span class="number">1</span>]);</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 最后字符相等话 就各自减去一个字符 + 当前的公共长度1</span></span><br><span class="line">                <span class="keyword">if</span>(A[i - <span class="number">1</span>] == B[j - <span class="number">1</span>])&#123;</span><br><span class="line">                    f[i][j] = Math.max(f[i][j], f[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> f[m][n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="工程中如何实践"><a href="#工程中如何实践" class="headerlink" title="工程中如何实践"></a>工程中如何实践</h2><blockquote>
+<p>我们循序渐进的来，其实并不是说越复杂的实现就越好，实现一个功能一定要根据自身的业务以及量来选择对应的实现，这个思想其实也体现在设计原则中，既不能设计不足，也不能过渡设计</p>
+</blockquote>
+<h3 id="实现一：-简单实现思路"><a href="#实现一：-简单实现思路" class="headerlink" title="实现一： 简单实现思路"></a>实现一： 简单实现思路</h3><blockquote>
+<p>当用户在搜索框内，输入一个拼写错误的单词时，我们就拿这个单词跟词库中的单词一一进行比较，计算编辑距离，将编辑距离最小的单词，作为纠正之后的单词，提示给用户。</p>
+<p>这就是拼写纠错最基本的原理。不过，真正用于商用的搜索引擎，拼写纠错功能显然不会就这么简单。一方面，单纯利用编辑距离来纠错，效果并不一定好；另一方面，词库中的数据量可能很大，搜索引擎每天要支持海量的搜索，所以对纠错的性能要求很高。</p>
+</blockquote>
+<h3 id="实现二：优化纠错效果差的情况"><a href="#实现二：优化纠错效果差的情况" class="headerlink" title="实现二：优化纠错效果差的情况"></a>实现二：优化纠错效果差的情况</h3><ul>
+<li><p>可以离线跑批，统计用户的搜索日志，得到最常被拼错的单词数据，可以使用Spark，业务系统在遇到需要拼写纠错的时候，直接从数据库、或者缓存中查询，效果很好👍</p>
+</li>
+<li><p>我们并不仅仅取出编辑距离最小的那个单词，而是取出编辑距离最小的 TOP N，然后根据其他参数，决策选择哪个单词作为拼写纠错单词。比如使用搜索热门程度来决定哪个单词作为拼写纠错单词。</p>
+</li>
+<li><p>我们还可以用多种编辑距离计算方法，比如今天讲到的两种，然后分别编辑距离最小的 TOP N，然后求交集，用交集的结果，再继续优化处理。</p>
+</li>
+</ul>
+<ul>
+<li>我们还有更加高级一点的做法，引入个性化因素。针对每个用户，维护这个用户特有的搜索喜好，也就是常用的搜索关键词。当用户输入错误的单词的时候，我们首先在这个用户常用的搜索关键词中，计算编辑距离，查找编辑距离最小的单词。</li>
+</ul>
+<h3 id="实现三：优化纠错性能问题"><a href="#实现三：优化纠错性能问题" class="headerlink" title="实现三：优化纠错性能问题"></a>实现三：优化纠错性能问题</h3><blockquote>
+<p>性能问题主要可以从 <strong>空间换时间</strong> 的角度去思考,比如增加缓存、改善算法、分而治之等</p>
+</blockquote>
+<ul>
+<li>如果纠错功能的 TPS 不高，我们可以部署多台机器，每台机器运行一个独立的纠错功能。当有一个纠错请求的时候，我们通过负载均衡，分配到其中一台机器，来计算编辑距离，得到纠错单词。</li>
+</ul>
+<ul>
+<li>如果纠错系统的响应时间太长，也就是，每个纠错请求处理时间过长，我们可以将纠错的词库，分割到很多台机器。当有一个纠错请求的时候，我们就将这个拼写错误的单词，同时发送到这多台机器，让多台机器并行处理，分别得到编辑距离最小的单词，然后再比对合并，最终决定出一个最优的纠错单词。</li>
+</ul>
+<h3 id="实现四：-换一种思考方向"><a href="#实现四：-换一种思考方向" class="headerlink" title="实现四： 换一种思考方向"></a>实现四： 换一种思考方向</h3><blockquote>
+<p>我们可以从用户输入的字符串着手，先按照编辑距离的思想把源字符串进行变动，得到变动集合S,在和本地语料数据进行比对，本地语料加载进缓存，进行快速检索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Stream&lt;String&gt; <span class="title">edits</span><span class="params">(<span class="keyword">final</span> String word)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 考虑删除元素的情况</span></span><br><span class="line">        Stream&lt;String&gt; deletes = IntStream.range(<span class="number">0</span>, word.length()).mapToObj((i) -&gt; word.substring(<span class="number">0</span>, i) + word.substring(i + <span class="number">1</span>));</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 考虑替换元素的情况</span></span><br><span class="line">        Stream&lt;String&gt; replaces = IntStream.range(<span class="number">0</span>, word.length()).boxed().flatMap((i) -&gt; <span class="string">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>.chars().mapToObj((c) -&gt; word.substring(<span class="number">0</span>, i) + (<span class="keyword">char</span>) c + word.substring(i + <span class="number">1</span>)));</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 考虑插入元素的情况</span></span><br><span class="line">        Stream&lt;String&gt; inserts = IntStream.range(<span class="number">0</span>, word.length() + <span class="number">1</span>).boxed().flatMap((i) -&gt; <span class="string">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>.chars().mapToObj((c) -&gt; word.substring(<span class="number">0</span>, i) + (<span class="keyword">char</span>) c + word.substring(i)));</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 相邻元素的交换情况</span></span><br><span class="line">        Stream&lt;String&gt; transposes = IntStream.range(<span class="number">0</span>, word.length() - <span class="number">1</span>).mapToObj((i) -&gt; word.substring(<span class="number">0</span>, i) + word.substring(i + <span class="number">1</span>, i + <span class="number">2</span>) + word.charAt(i) + word.substring(i + <span class="number">2</span>));</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> Stream.of(deletes, replaces, inserts, transposes).flatMap((x) -&gt; x).distinct();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>tang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://blog.hetao.monster/2020/03/13/spell-correct/" title="spell-correct">http://blog.hetao.monster/2020/03/13/spell-correct/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/25/springboot-plus/" rel="next" title="springboot-plus">
+      springboot-plus <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%87%8F%E5%8C%96%E4%B8%A4%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">如何量化两个字符串的相似度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E8%8E%B1%E6%96%87%E6%96%AF%E5%9D%A6%E8%B7%9D%E7%A6%BB"><span class="nav-number">1.1.</span> <span class="nav-text">代码实现莱文斯坦距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E4%B8%B2%E9%95%BF%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">代码实现最长公共子串长度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E4%B8%AD%E5%A6%82%E4%BD%95%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">工程中如何实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%EF%BC%9A-%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.</span> <span class="nav-text">实现一： 简单实现思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BA%8C%EF%BC%9A%E4%BC%98%E5%8C%96%E7%BA%A0%E9%94%99%E6%95%88%E6%9E%9C%E5%B7%AE%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">2.2.</span> <span class="nav-text">实现二：优化纠错效果差的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%89%EF%BC%9A%E4%BC%98%E5%8C%96%E7%BA%A0%E9%94%99%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.</span> <span class="nav-text">实现三：优化纠错性能问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%9B%9B%EF%BC%9A-%E6%8D%A2%E4%B8%80%E7%A7%8D%E6%80%9D%E8%80%83%E6%96%B9%E5%90%91"><span class="nav-number">2.4.</span> <span class="nav-text">实现四： 换一种思考方向</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">tang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tangtang520" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tangtang520" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1315803594@qq.com" title="E-Mail → mailto:1315803594@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">15k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blog-grw8rnmv8u.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.hetao.monster/2020/03/13/spell-correct/";
+    this.page.identifier = "2020/03/13/spell-correct/";
+    this.page.title = "spell-correct";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blog-grw8rnmv8u.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
